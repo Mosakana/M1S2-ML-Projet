@@ -1,3 +1,4 @@
+import sys
 import unittest
 import torch
 from LinearModel import MSELoss, Linear
@@ -23,8 +24,8 @@ class MyTestCase(unittest.TestCase):
         gradient_w = X.t().mm(delta_MSE)
 
 
-        self.assertEqual(torch.all(gradient_X.isclose(X.grad, 10e-5)), True)
-        self.assertEqual(torch.all(gradient_w.isclose(w.grad, 10e-5)), True) # add assertion here
+        self.assertEqual(torch.all(gradient_X.isclose(X.grad, atol = 1e-4)), True)
+        self.assertEqual(torch.all(gradient_w.isclose(w.grad, atol = 1e-4)), True) # add assertion here
 
 
 if __name__ == '__main__':
