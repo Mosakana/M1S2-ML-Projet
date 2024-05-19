@@ -2,7 +2,7 @@ import sys
 import unittest
 import torch
 from NonLinearModel import Tanh, Sigmoid
-from LinearModel import MSELoss
+from Loss import MSELoss
 
 
 
