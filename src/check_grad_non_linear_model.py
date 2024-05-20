@@ -1,8 +1,8 @@
 import sys
 import unittest
 import torch
-from NonLinearModel import Tanh, Sigmoid, SoftMax
-from Loss import MSELoss
+from NonLinearModel import Tanh, Sigmoid, LogSoftMax
+from Loss import MSELoss, BCELoss
 import numpy as np
 
 
@@ -46,7 +46,7 @@ class TestSoftMax(unittest.TestCase):
         loss = torch.linalg.norm(y - torch_softmax, axis=-1) ** 2
         loss.sum().backward()
 
-        softmax = SoftMax()
+        softmax = LogSoftMax()
         mse = MSELoss()
         my_softmax = softmax.forward(X.detach().numpy())
         my_grad_softmax = softmax.backward_delta(X.detach().numpy(), mse.backward(y.detach().numpy(), my_softmax))
@@ -54,6 +54,29 @@ class TestSoftMax(unittest.TestCase):
         self.assertEqual(torch.all(torch.tensor(my_softmax).isclose(torch_softmax, atol=1e-4)), True)
 
         self.assertEqual(torch.all(torch.tensor(my_grad_softmax).isclose(X.grad, atol=1e-4)), True)
+
+class TestBCE(unittest.TestCase):
+    def test_bce(self):
+        batch = 10
+        data_size = 1
+
+        y = torch.randint(0, 2, [batch, 1]).float()
+
+        X_sigmoid = torch.randn((batch, data_size), requires_grad=True)
+        s = torch.nn.Sigmoid()
+        loss2 = torch.nn.functional.binary_cross_entropy(s(X_sigmoid), y)
+        loss2.sum().backward()
+
+        bce = BCELoss()
+
+        sigmoid = Sigmoid()
+        delta_X2 = bce.backward(y.detach().numpy(), sigmoid.forward(X_sigmoid.detach().numpy()))
+        grad_sigmoid_X = sigmoid.backward_delta(X_sigmoid.detach().numpy(), delta_X2)
+
+
+        self.assertEqual(torch.all(torch.tensor(bce.forward(y.detach().numpy(), sigmoid.forward(X_sigmoid.detach().numpy()))).isclose(loss2, atol=1e-4)), True)
+
+        self.assertEqual(torch.all(torch.tensor(grad_sigmoid_X).isclose(X_sigmoid.grad, atol=1e-4)), True)
 
 
 

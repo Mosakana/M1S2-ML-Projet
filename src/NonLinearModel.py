@@ -44,13 +44,16 @@ class Sigmoid(Module):
         pass
 
 
-class SoftMax(Module):
+class LogSoftMax(Module):
+    """
+
+    """
     def __init__(self):
         super().__init__()
         self._gradient = 0.0
 
     def forward(self, X):
-        return np.exp(X) / np.exp(X).sum()
+        return np.log(np.exp(X) / np.exp(X).sum())
 
     def zero_grad(self):
         self._gradient = 0.0
