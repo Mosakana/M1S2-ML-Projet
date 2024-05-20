@@ -1,8 +1,8 @@
 import sys
 import unittest
 import torch
-from LinearModel import Linear
-from Loss import MSELoss
+from src.LinearModel import Linear
+from src.Loss import MSELoss
 
 
 class MyTestCase(unittest.TestCase):

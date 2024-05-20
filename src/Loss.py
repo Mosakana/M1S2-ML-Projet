@@ -1,5 +1,5 @@
 import numpy as np
-from projet_etu import Loss
+from src.projet_etu import Loss
 class MSELoss(Loss):
     """
 

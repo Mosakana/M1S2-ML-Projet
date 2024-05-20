@@ -1,7 +1,7 @@
 import unittest
 import torch
 import numpy as np
-from Loss import CELossSoftMax
+from src.Loss import CELossSoftMax
 
 class MyTestCase(unittest.TestCase):
     def test_check_grad(self):

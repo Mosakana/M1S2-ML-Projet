@@ -1,8 +1,8 @@
 import sys
 import unittest
 import torch
-from NonLinearModel import Tanh, Sigmoid, LogSoftMax
-from Loss import MSELoss, BCELoss
+from src.NonLinearModel import Tanh, Sigmoid, LogSoftMax
+from src.Loss import MSELoss, BCELoss
 import numpy as np
 
 

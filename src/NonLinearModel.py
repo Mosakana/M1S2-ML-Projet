@@ -1,5 +1,5 @@
 import numpy as np
-from projet_etu import Module
+from src.projet_etu import Module
 
 
 class Tanh(Module):

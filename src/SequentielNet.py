@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Sequentiel():
     def __init__(self, *args):
         self.net = args
@@ -35,7 +38,7 @@ class Optim():
         self.net = net
         self.loss = loss
         self.eps = eps
-        self.y_hat = None
+        self.yhat = None
         self.score = 0
 
     def step(self, batch_X, batch_y):
@@ -46,7 +49,13 @@ class Optim():
         self.net.backward(self.loss.backward(batch_y, y_hat), self.eps)
 
     def update_output(self):
-        self.y_hat = self.net.outputs[-1]
+        if self.yhat is None:
+            self.yhat = self.net.outputs[-1]
+        else:
+            self.yhat = np.vstack((self.yhat, self.net.outputs[-1]))
+
+    def clean_output(self):
+        self.yhat = None
 
     def zero_score(self):
         self.score = 0
@@ -56,11 +65,13 @@ def SGD(net, X, y, batch_size, epochs, loss, eps=1e-3):
     n_batch = X.shape[0] // batch_size
 
     for iteration in range(epochs):
+        optim.clean_output()
         optim.zero_score()
         for i in range(n_batch):
             optim.step(X[i * batch_size: (i+1) * batch_size], y[i * batch_size: (i+1) * batch_size])
+            optim.update_output()
 
         optim.step(X[n_batch * batch_size:], y[n_batch * batch_size:])
         optim.update_output()
 
-    return optim.y_hat, optim.score
+    return optim
