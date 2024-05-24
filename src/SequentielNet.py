@@ -6,6 +6,8 @@ class Sequentiel():
         self.net = args
         self.outputs = None
 
+        self.grads = None
+
     def forward(self, X):
         res = [X]
         for model in self.net:
@@ -22,6 +24,8 @@ class Sequentiel():
         reversed_outputs = self.outputs[::-1]
         for i, model in enumerate(self.net[::-1]):
             grads_in_nets.append(model.backward_delta(reversed_outputs[i], grads_in_nets[-1]))
+
+        self.grads = grads_in_nets
 
         # update gradients in linear models
         for i, model in enumerate(self.net):
@@ -44,7 +48,7 @@ class Optim():
     def step(self, batch_X, batch_y):
         self.net.zero_grad()
         y_hat = self.net.forward(batch_X)[-1]
-        self.score += self.loss.forward(batch_y, y_hat).sum()
+        self.score += self.loss.forward(batch_y, y_hat)
 
         self.net.backward(self.loss.backward(batch_y, y_hat), self.eps)
 

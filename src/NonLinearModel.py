@@ -62,8 +62,9 @@ class LogSoftMax(Module):
         p = np.exp(X) / np.exp(X).sum()
         length_p = p.shape[0]
         Jacobian = np.tile(-p, (length_p, 1))
-        for i in range(length_p):
-            Jacobian[i, i] = 1 + Jacobian[i, i]
+        Jacobian[np.diag_indices(Jacobian)] += 1
+        # for i in range(length_p):
+        #     Jacobian[i, i] = 1 + Jacobian[i, i]
 
         return Jacobian.T @ delta
 
